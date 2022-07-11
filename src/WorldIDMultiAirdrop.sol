@@ -92,7 +92,7 @@ contract WorldIDMultiAirdrop {
     /// @param  uint256     groupId     The ID of the Semaphore group that will be eligible to claim this airdrop
     /// @param  ERC20       token       The ERC20 token that will be airdropped to eligible participants
     /// @param  address     holder      The address holding the tokens that will be airdropped
-    /// @param  amount      amount      of tokens that each participant will receive upon claiming
+    /// @param  uint256     amount      of tokens that each participant will receive upon claiming
     function createAirdrop(
         uint256 groupId,
         ERC20 token,
