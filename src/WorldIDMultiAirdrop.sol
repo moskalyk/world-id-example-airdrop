@@ -16,43 +16,44 @@ contract WorldIDMultiAirdrop {
     ///                                  ERRORS                                ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @notice Thrown when trying to create or update airdrop details without being the manager
+    /// @notice     Thrown when trying to create or update airdrop details without being the manager
     error Unauthorized();
 
-    /// @notice Thrown when attempting to reuse a nullifier
+    /// @notice     Thrown when attempting to reuse a nullifier
     error InvalidNullifier();
 
-    /// @notice Thrown when attempting to claim a non-existant airdrop
+    /// @notice     Thrown when attempting to claim a non-existant airdrop
     error InvalidAirdrop();
 
     ///////////////////////////////////////////////////////////////////////////////
     ///                                  EVENTS                                ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @notice Emitted when an airdrop is created
-    /// @param airdropId The id of the airdrop
-    /// @param airdrop The airdrop details
+    /// @notice             Emitted when an airdrop is created
+    /// @param  uint256     airdropId   The id of the airdrop
+    /// @param  Airdrop     airdrop     The airdrop details
     event AirdropCreated(uint256 airdropId, Airdrop airdrop);
 
-    /// @notice Emitted when an airdrop is successfully claimed
-    /// @param receiver The address that received the airdrop
+    /// @notice             Emitted when an airdrop is successfully claimed
+    /// @param  uint256     airdropId   The id of the airdrop
+    /// @param  uint256     receiver    The address that received the airdrop
     event AirdropClaimed(uint256 indexed airdropId, address receiver);
 
-    /// @notice Emitted when the airdropped amount is changed
-    /// @param airdropId The id of the airdrop getting updated
-    /// @param airdrop The new details for the airdrop
+    /// @notice             Emitted when the airdropped amount is changed
+    /// @param  uint256     airdropId   The id of the airdrop getting updated
+    /// @param  Airdrop     airdrop     The new details for the airdrop
     event AirdropUpdated(uint256 indexed airdropId, Airdrop airdrop);
 
     ///////////////////////////////////////////////////////////////////////////////
     ///                                 STRUCTS                                ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @notice Stores the details for a specific airdrop
-    /// @param groupId The ID of the Semaphore group that will be eligible to claim this airdrop
-    /// @param token The ERC20 token that will be airdropped to eligible participants
-    /// @param manager The address that manages this airdrop, which is allowed to update the airdrop details.
-    /// @param holder The address holding the tokens that will be airdropped
-    /// @param amount The amount of tokens that each participant will receive upon claiming
+    /// @notice             Stores the details for a specific airdrop
+    /// @param  uint256     groupId     The ID of the Semaphore group that will be eligible to claim this airdrop
+    /// @param  ERC20       token       The ERC20 token that will be airdropped to eligible participants
+    /// @param  address     manager     The address that manages this airdrop, which is allowed to update the airdrop details.
+    /// @param  address     holder      The address holding the tokens that will be airdropped
+    /// @param  uint256     amount      The amount of tokens that each participant will receive upon claiming
     struct Airdrop {
         uint256 groupId;
         ERC20 token;
@@ -65,30 +66,33 @@ contract WorldIDMultiAirdrop {
     ///                              CONFIG STORAGE                            ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @dev The WorldID instance that will be used for managing groups and verifying proofs
+    /// @dev    The WorldID instance that will be used for managing groups and verifying proofs
     IWorldID internal immutable worldId;
-
-    /// @dev Whether a nullifier hash has been used already. Used to prevent double-signaling
+    
+    /// @dev    Whether a nullifier hash has been used already. Used to prevent double-signaling
     mapping(uint256 => bool) internal nullifierHashes;
-
+    
+    /// @dev
     uint256 internal nextAirdropId = 1;
+    
+    /// @dev
     mapping(uint256 => Airdrop) public getAirdrop;
 
     ///////////////////////////////////////////////////////////////////////////////
     ///                               CONSTRUCTOR                              ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @notice Deploys a WorldIDAirdrop instance
-    /// @param _worldId The WorldID instance that will manage groups and verify proofs
+    /// @notice             Deploys a WorldIDAirdrop instance
+    /// @param  IWorldID    _worldId    The WorldID instance that will manage groups and verify proofs
     constructor(IWorldID _worldId) {
         worldId = _worldId;
     }
 
-    /// @notice Create a new airdrop
-    /// @param groupId The ID of the Semaphore group that will be eligible to claim this airdrop
-    /// @param token The ERC20 token that will be airdropped to eligible participants
-    /// @param holder The address holding the tokens that will be airdropped
-    /// @param amount The amount of tokens that each participant will receive upon claiming
+    /// @notice             Create a new airdrop
+    /// @param  uint256     groupId     The ID of the Semaphore group that will be eligible to claim this airdrop
+    /// @param  ERC20       token       The ERC20 token that will be airdropped to eligible participants
+    /// @param  address     holder      The address holding the tokens that will be airdropped
+    /// @param  amount      amount      of tokens that each participant will receive upon claiming
     function createAirdrop(
         uint256 groupId,
         ERC20 token,
@@ -113,12 +117,12 @@ contract WorldIDMultiAirdrop {
     ///                               CLAIM LOGIC                               ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @notice Claim a given airdrop
-    /// @param airdropId The id of the airdrop getting claimed
-    /// @param receiver The address that will receive the tokens
-    /// @param root The of the Merkle tree
-    /// @param nullifierHash The nullifier for this proof, preventing double signaling
-    /// @param proof The zero knowledge proof that demostrates the claimer is part of the Semaphore group
+    /// @notice             Claim a given airdrop
+    /// @param   uint256    airdropId       The id of the airdrop getting claimed
+    /// @param   address    receiver        The address that will receive the tokens
+    /// @param   uint256    root            The of the Merkle tree
+    /// @param   uint256    nullifierHash   The nullifier for this proof, preventing double signaling
+    /// @param   uint256    proof           The zero knowledge proof that demostrates the claimer is part of the Semaphore group
     function claim(
         uint256 airdropId,
         address receiver,
@@ -150,9 +154,9 @@ contract WorldIDMultiAirdrop {
     ///                               CONFIG LOGIC                             ///
     //////////////////////////////////////////////////////////////////////////////
 
-    /// @notice Update the details for a given airdrop, for addresses that haven't claimed already. Can only be called by the airdrop creator
-    /// @param airdropId The id of the airdrop to update
-    /// @param airdrop The new details for the airdrop
+    /// @notice             Update the details for a given airdrop, for addresses that haven't claimed already. Can only be called by the airdrop creator
+    /// @param  uint256     airdropId       The id of the airdrop to update
+    /// @param  Airdrop     airdrop         The new details for the airdrop
     function updateDetails(uint256 airdropId, Airdrop calldata airdrop) public {
         if (getAirdrop[airdropId].manager != msg.sender) revert Unauthorized();
 
