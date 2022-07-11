@@ -72,10 +72,10 @@ contract WorldIDMultiAirdrop {
     /// @dev    Whether a nullifier hash has been used already. Used to prevent double-signaling
     mapping(uint256 => bool) internal nullifierHashes;
     
-    /// @dev
+    /// @dev    An Id representing the next airdrop, incremented 
     uint256 internal nextAirdropId = 1;
     
-    /// @dev
+    /// @dev    A mapping holding the airdrops
     mapping(uint256 => Airdrop) public getAirdrop;
 
     ///////////////////////////////////////////////////////////////////////////////
