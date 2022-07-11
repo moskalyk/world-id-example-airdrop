@@ -6,9 +6,9 @@ import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 import { IWorldID } from 'world-id-contracts/interfaces/IWorldID.sol';
 import { ByteHasher } from 'world-id-contracts/libraries/ByteHasher.sol';
 
-/// @title World ID Multiple Airdrop Manager
-/// @author Miguel Piedrafita
-/// @notice Template contract for managing multiple airdrops to World ID members.
+/// @title      World ID Multiple Airdrop Manager
+/// @author     Miguel Piedrafita
+/// @notice     Template contract for managing multiple airdrops to World ID members.
 contract WorldIDMultiAirdrop {
     using ByteHasher for bytes;
 
